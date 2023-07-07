@@ -35,3 +35,16 @@ resource "aws_instance" "misskey" {
     Name = "Misskey"
   }
 }
+
+resource "cloudflare_zone" "social" {
+  account_id = var.cloudflare_account_id
+  zone = "integraldx.social"
+}
+
+resource "cloudflare_record" "misskey" {
+  zone_id = cloudflare_zone.social.id
+  name = "@"
+  value = aws_instance.misskey.public_ip
+  type = "A"
+  ttl = 3600
+}
