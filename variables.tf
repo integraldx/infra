@@ -10,6 +10,6 @@ variable "aws_secret_key" {
   type = string
 }
 
-variable "cloudflare_account_id" {
+variable "cloudflare_dot_social_zone_id" {
   type = string
 }

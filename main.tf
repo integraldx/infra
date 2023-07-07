@@ -36,13 +36,8 @@ resource "aws_instance" "misskey" {
   }
 }
 
-resource "cloudflare_zone" "social" {
-  account_id = var.cloudflare_account_id
-  zone = "integraldx.social"
-}
-
 resource "cloudflare_record" "misskey" {
-  zone_id = cloudflare_zone.social.id
+  zone_id = var.cloudflare_dot_social_zone_id
   name = "@"
   value = aws_instance.misskey.public_ip
   type = "A"
