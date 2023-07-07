@@ -21,3 +21,17 @@ provider "aws" {
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
+
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners = ["amazon"]
+}
+
+resource "aws_instance" "misskey" {
+  ami = data.aws_ami.amazon_linux.id
+  instance_type = "t3a.medium"
+
+  tags = {
+    Name = "Misskey"
+  }
+}
