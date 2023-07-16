@@ -3,7 +3,7 @@ resource "aws_iam_role" "gh_actions" {
 
   assume_role_policy = <<EOF
 {
-  "Version": "2012-10-17"
+  "Version": "2012-10-17",
   "Statement": [
     {
       "Effect": "Allow",
@@ -37,7 +37,8 @@ resource "aws_iam_policy" "gh_actions_policy" {
       "Effect": "Allow",
       "Action": [
         "s3:*Object*"
-      ]
+      ],
+      "Resource": "*"
     }
   ]
 }
