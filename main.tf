@@ -45,11 +45,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-resource "aws_key_pair" "integraldx_key" {
-  key_name   = "integraldx-key"
-  public_key = var.ssh_pubkey
-}
-
 resource "aws_instance" "misskey" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = "t3a.medium"
@@ -59,8 +54,6 @@ resource "aws_instance" "misskey" {
   vpc_security_group_ids = [aws_security_group.allow_web_access.id, aws_security_group.allow_ssh_access.id]
 
   iam_instance_profile = aws_iam_instance_profile.misskey_instance_codedeploy.id
-
-  key_name = aws_key_pair.integraldx_key.key_name
 
   tags = {
     Name      = "Misskey"
@@ -222,6 +215,32 @@ resource "aws_iam_role_policy" "misskey_instance_codedeploy_policy" {
       "Resource": [
         "*"
       ]
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "misskey_instance_ec2connect_policy" {
+  name = "misskey-instance-ec2connect-policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2-instance-connect:SendSSHPublicKey"
+      ],
+      "Resource": [
+        "${aws_instance.misskey.arn}"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ec2:osuser": "ec2-user"
+        }
+      }
     }
   ]
 }
