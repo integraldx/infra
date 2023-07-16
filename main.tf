@@ -59,10 +59,12 @@ resource "aws_security_group" "allow_web_access" {
   description = "Allow http, https traffic"
 
   ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    description      = "HTTP"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
@@ -78,10 +80,14 @@ resource "aws_security_group" "allow_web_access" {
   }
 }
 
+resource "aws_eip" "misskey_ip" {
+  instance = aws_instance.misskey.id
+}
+
 resource "cloudflare_record" "misskey" {
   zone_id = var.cloudflare_dot_social_zone_id
   name    = "@"
-  value   = aws_instance.misskey.public_ip
+  value   = aws_eip.misskey_ip.public_ip
   type    = "A"
   ttl     = 3600
 }
