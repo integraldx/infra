@@ -221,8 +221,9 @@ resource "aws_iam_role_policy" "misskey_instance_codedeploy_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "misskey_instance_ec2connect_policy" {
+resource "aws_iam_policy" "misskey_instance_ec2connect_policy" {
   name = "misskey-instance-ec2connect-policy"
+  role = aws_iam_role.administrator_role.name
 
   policy = <<EOF
 {
