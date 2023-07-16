@@ -41,7 +41,7 @@ resource "aws_instance" "misskey" {
 
   user_data = file("scripts/misskey_user_data.sh")
 
-  security_groups = [ aws_security_group.allow_web_access.id ]
+  vpc_security_group_ids = [ aws_security_group.allow_web_access.id ]
 
   tags = {
     Name      = "Misskey"
