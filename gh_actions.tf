@@ -37,7 +37,8 @@ resource "aws_iam_policy" "gh_actions_policy" {
       "Effect": "Allow",
       "Action": [
         "s3:*Object*",
-        "s3:ListBucket"
+        "s3:ListBucket",
+        "codedeploy:CreateDeployment"
       ],
       "Resource": "*"
     }
