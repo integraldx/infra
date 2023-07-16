@@ -53,6 +53,8 @@ resource "aws_instance" "misskey" {
 
   vpc_security_group_ids = [aws_security_group.allow_web_access.id]
 
+  iam_instance_profile = aws_iam_instance_profile.misskey_instance_codedeploy.id
+
   tags = {
     Name      = "Misskey"
     Terraform = "true"
@@ -156,4 +158,51 @@ EOF
 resource "aws_iam_role_policy_attachment" "misskey_codedeploy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
   role       = aws_iam_role.misskey_deployment_role.name
+}
+
+resource "aws_iam_instance_profile" "misskey_instance_codedeploy" {
+  name = "misskey-instance-codedeploy"
+  role = aws_iam_role.misskey_instance_codedeploy_role.name
+}
+
+resource "aws_iam_role" "misskey_instance_codedeploy_role" {
+  name               = "misskey-instance-codedeploy-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Principal": {
+        "Service": ["ec2.amazonaws.com"]
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "misskey_instance_codedeploy_policy" {
+  name = "misskey-instance-codedeploy-policy"
+  role = aws_iam_role.misskey_instance_codedeploy_role.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+EOF
 }
