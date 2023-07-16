@@ -98,7 +98,7 @@ resource "cloudflare_record" "misskey" {
 }
 
 resource "aws_s3_bucket" "misskey_deployment" {
-  bucket = "misskey_deployment"
+  bucket = "misskey-deployment"
 
   tags = {
     Terraform = "true"
