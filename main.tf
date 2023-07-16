@@ -104,3 +104,12 @@ resource "aws_s3_bucket" "misskey_deployment" {
     Terraform = "true"
   }
 }
+
+resource "aws_codedeploy_deployment_config" "misskey_deployment_config" {
+  deployment_config_name = "misskey-deployment-config"
+
+  minimum_healthy_hosts {
+    type = "HOST_COUNT"
+    value = 1
+  }
+}
