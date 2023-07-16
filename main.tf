@@ -38,6 +38,11 @@ data "aws_ami" "amazon_linux" {
     name   = "architecture"
     values = ["x86_64"]
   }
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023*"]
+  }
 }
 
 resource "aws_instance" "misskey" {
