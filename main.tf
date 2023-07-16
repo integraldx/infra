@@ -45,15 +45,22 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
+resource "aws_key_pair" "integraldx_key" {
+  key_name   = "integraldx-key"
+  public_key = var.ssh_pubkey
+}
+
 resource "aws_instance" "misskey" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = "t3a.medium"
 
   user_data = file("scripts/misskey_user_data.sh")
 
-  vpc_security_group_ids = [aws_security_group.allow_web_access.id]
+  vpc_security_group_ids = [aws_security_group.allow_web_access.id, aws_security_group.allow_ssh_access.id]
 
   iam_instance_profile = aws_iam_instance_profile.misskey_instance_codedeploy.id
+
+  key_name = aws_key_pair.integraldx_key.key_name
 
   tags = {
     Name      = "Misskey"
@@ -61,8 +68,22 @@ resource "aws_instance" "misskey" {
   }
 }
 
+resource "aws_security_group" "allow_ssh_access" {
+  name        = "allow-ssh-access"
+  description = "Allow ssh traffic"
+
+  ingress {
+    description      = "SSH"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
+
 resource "aws_security_group" "allow_web_access" {
-  name        = "allow_web_access"
+  name        = "allow-web-access"
   description = "Allow http, https traffic"
 
   ingress {

@@ -13,3 +13,7 @@ variable "aws_secret_key" {
 variable "cloudflare_dot_social_zone_id" {
   type = string
 }
+
+variable "ssh_pubkey" {
+  type = string
+}
