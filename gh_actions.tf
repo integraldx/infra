@@ -26,7 +26,7 @@ EOF
 }
 
 resource "aws_iam_policy" "gh_actions_policy" {
-  name = "gh-actions-policy"
+  name        = "gh-actions-policy"
   description = "GitHub Actions policy"
 
   policy = <<EOF
@@ -51,12 +51,12 @@ data "tls_certificate" "gh_actions_certificate" {
 }
 
 resource "aws_iam_openid_connect_provider" "gh_actions_provider" {
-  url = "https://token.actions.githubusercontent.com"
-  client_id_list = ["sts.amazonaws.com"]
+  url             = "https://token.actions.githubusercontent.com"
+  client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = data.tls_certificate.gh_actions_certificate.certificates[*].sha1_fingerprint
 }
 
 resource "aws_iam_role_policy_attachment" "gh_actions_attachment" {
-  role = aws_iam_role.gh_actions.name
+  role       = aws_iam_role.gh_actions.name
   policy_arn = aws_iam_policy.gh_actions_policy.arn
 }
