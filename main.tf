@@ -96,3 +96,11 @@ resource "cloudflare_record" "misskey" {
   type    = "A"
   ttl     = 3600
 }
+
+resource "aws_s3_bucket" "misskey_deployment" {
+  bucket = "misskey_deployment"
+
+  tags = {
+    Terraform = "true"
+  }
+}
