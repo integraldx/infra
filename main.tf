@@ -118,3 +118,42 @@ resource "aws_codedeploy_deployment_config" "misskey_deployment_config" {
     value = 1
   }
 }
+
+resource "aws_codedeploy_deployment_group" "misskey" {
+  app_name              = aws_codedeploy_app.misskey.name
+  deployment_group_name = "misskey"
+  service_role_arn      = aws_iam_role.misskey_deployment_role.arn
+
+  ec2_tag_set {
+    ec2_tag_filter {
+      key   = "Name"
+      type  = "KEY_AND_VALUE"
+      value = "Misskey"
+    }
+  }
+}
+
+resource "aws_iam_role" "misskey_deployment_role" {
+  name               = "misskey-deployment-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Principal": {
+        "Service": ["codedeploy.amazonaws.com"]
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "misskey_codedeploy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+  role       = aws_iam_role.misskey_deployment_role.name
+}
