@@ -33,6 +33,11 @@ provider "aws" {
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
+
+  filter {
+    name   = "architecture"
+    values = "x86_64"
+  }
 }
 
 resource "aws_instance" "misskey" {
@@ -41,7 +46,7 @@ resource "aws_instance" "misskey" {
 
   user_data = file("scripts/misskey_user_data.sh")
 
-  vpc_security_group_ids = [ aws_security_group.allow_web_access.id ]
+  vpc_security_group_ids = [aws_security_group.allow_web_access.id]
 
   tags = {
     Name      = "Misskey"
