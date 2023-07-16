@@ -220,30 +220,3 @@ resource "aws_iam_role_policy" "misskey_instance_codedeploy_policy" {
 }
 EOF
 }
-
-resource "aws_iam_policy" "misskey_instance_ec2connect_policy" {
-  name = "misskey-instance-ec2connect-policy"
-  role = aws_iam_role.administrator_role.name
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2-instance-connect:SendSSHPublicKey"
-      ],
-      "Resource": [
-        "${aws_instance.misskey.arn}"
-      ],
-      "Condition": {
-        "StringEquals": {
-          "ec2:osuser": "ec2-user"
-        }
-      }
-    }
-  ]
-}
-EOF
-}
