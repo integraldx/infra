@@ -1,6 +1,7 @@
 #! /bin/bash
 sudo yum update -y
 sudo yum install -y docker
+sudo yum install -y docker-compose
 sudo yum install -y ruby
 sudo yum install -y wget
 sudo yum install -y ec2-instance-connect
