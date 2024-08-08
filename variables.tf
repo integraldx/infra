@@ -17,3 +17,7 @@ variable "cloudflare_dot_social_zone_id" {
 variable "cloudflare_account_id" {
   type = string
 }
+
+variable "homelab_public_ipv4" {
+  type = string
+}
